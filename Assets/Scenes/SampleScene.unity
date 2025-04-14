@@ -604,7 +604,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32b58ad7cd262fc48b4fb14c38f3d154, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitData: {fileID: 0}
+  unitData: {fileID: 11400000, guid: bd9d1af7c6a6d3e4e932565db1e10c94, type: 2}
   team: 0
   Unit_id: 0
   Unit_name: 

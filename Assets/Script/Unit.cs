@@ -32,10 +32,11 @@ public class Unit : MonoBehaviour
         if(unitData != null)
         {
             StatusSetting();
+            FighterMe();
         }
     }
 
-    void StatusSetting()
+    public void StatusSetting()
     {
         if (unitData.teams == UnitData.Teams.Player)
         {
@@ -56,6 +57,11 @@ public class Unit : MonoBehaviour
         Magical_Defense = unitData.Magical_Defense;
         speed = unitData.speed;
         Unit_Explanation = unitData.Unit_Explanation;
+    }
+
+    public void FighterMe()
+    {
+        FightManager.instance.Fights_units.Add(this);
     }
 
 }
