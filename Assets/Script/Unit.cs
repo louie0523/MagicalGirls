@@ -1,20 +1,61 @@
 using NUnit.Framework;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Unit", menuName = "Game/Unit")]
-public class Unit : ScriptableObject
+public enum Team
 {
-    public int Unit_id = 0;
-    public string Unit_name;
-    public int MaxHp = 100;
-    public int Hp = 100;
-    public int Attack = 20;
-    public int Magic = 0;
-    public int Physical_Defense = 50;
-    public int Magical_Defense = 25;
-    public int speed = 30;
+    Player,
+    Enemy,
+    None,
+};
 
+public class Unit : MonoBehaviour
+{
+    [Header("Id Info")]
+    public UnitData unitData;
+    public Team team;
+    public int Unit_id;
+    public string Unit_name;
+    [Header("Stat Info")]
+    public int MaxHp;
+    public int Hp;
+    public float MaxStamina;
+    public float Stamina;
+    public int Attack;
+    public int Magic;
+    public int Physical_Defense;
+    public int Magical_Defense;
+    public int speed;
     public string Unit_Explanation;
 
+    private void Start()
+    {
+        if(unitData != null)
+        {
+            StatusSetting();
+        }
+    }
+
+    void StatusSetting()
+    {
+        if (unitData.teams == UnitData.Teams.Player)
+        {
+            team = Team.Player;
+        } else
+        {
+            team = Team.Enemy;
+        }
+        Unit_id = unitData.Unit_id;
+        Unit_name = unitData.Unit_name;
+        MaxHp = unitData.MaxHp;
+        Hp = MaxHp;
+        MaxStamina = unitData.MaxStamina;
+        Stamina = MaxStamina;
+        Attack = unitData.Attack;
+        Magic = unitData.Magic;
+        Physical_Defense = unitData.Physical_Defense;
+        Magical_Defense = unitData.Magical_Defense;
+        speed = unitData.speed;
+        Unit_Explanation = unitData.Unit_Explanation;
+    }
 
 }
