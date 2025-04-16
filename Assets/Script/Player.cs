@@ -6,6 +6,9 @@ public class Player : MonoBehaviour
 
     Rigidbody2D rigid;
     Animator animator;
+    public float walkIdleDelay = 0.05f;
+    public float noInputTime = 0f;
+
 
     private void Start()
     {
@@ -23,9 +26,25 @@ public class Player : MonoBehaviour
         float inputX = Input.GetAxisRaw("Horizontal");
         rigid.linearVelocity = new Vector2(inputX * speed, rigid.linearVelocity.y);
 
-        if (inputX != 0)
+        bool isWalking = Mathf.Abs(inputX) > 0;
+
+        if (isWalking)
+        {
+            animator.SetBool("walk", true);
+            noInputTime = 0f;
             Flip(inputX > 0);
+        }
+        else
+        {
+            noInputTime += Time.fixedDeltaTime;
+            if (noInputTime >= walkIdleDelay)
+            {
+                animator.SetBool("walk", false);
+            }
+        }
     }
+
+
 
     void Flip(bool facingRight)
     {
