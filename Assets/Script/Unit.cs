@@ -36,6 +36,8 @@ public class Unit : MonoBehaviour
     public string Unit_Explanation;
     [Header("가진 아이템")]
     public List<Item> Items = new List<Item>();
+    [Header("전투")]
+    public Unit Target;
 
     private void Start()
     {

@@ -11,6 +11,8 @@ public class BattleSystem : MonoBehaviour
 
     [Header("전투 상황")]
     public List<Unit> Turn = new List<Unit>();
+    public int CurrentTurn = 0;
+    public bool turnProess = true;
 
     private void Awake()
     {
@@ -27,6 +29,20 @@ public class BattleSystem : MonoBehaviour
     {
         PostionSetting();
         StartBattileSet();
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePos, Vector2.zero);
+
+            if (hit.collider != null)
+            {
+                Debug.Log("클릭한 오브젝트: " + hit.collider.name);
+            }
+        }
     }
 
     void PostionSetting()
