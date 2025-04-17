@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 
 public enum CurrentStatus
@@ -14,7 +15,7 @@ public class FightManager : MonoBehaviour
     
     public CurrentStatus status;
 
-    public List<Unit> Fights_units = new List<Unit>();
+    public List<GameObject> Fights_units = new List<GameObject>();
 
 
 
@@ -34,5 +35,24 @@ public class FightManager : MonoBehaviour
     public void Start()
     {
         
+    }
+
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.F) && status == CurrentStatus.NoFight)
+        {
+            status = CurrentStatus.Fight;
+            StartBattle();
+        }
+    }
+
+    public void StartBattle()
+    {
+        foreach(GameObject obj in Fights_units)
+        {
+            DontDestroyOnLoad (obj);
+        }
+
+        SceneManager.LoadScene("Battle");
     }
 }

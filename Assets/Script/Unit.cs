@@ -1,5 +1,6 @@
-using NUnit.Framework;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public enum Team
 {
@@ -7,15 +8,22 @@ public enum Team
     Enemy,
     None,
 };
-
+[System.Serializable]
+public class MyName
+{
+    public bool isMyname = false;
+    public string Myname;
+}
 public class Unit : MonoBehaviour
 {
-    [Header("Id Info")]
+    [Header("ID 및 식별명")]
     public UnitData unitData;
     public Team team;
+    public int position = 0;
     public int Unit_id;
     public string Unit_name;
-    [Header("Stat Info")]
+    public MyName myname;
+    [Header("스테이터스")]
     public int MaxHp;
     public int Hp;
     public float MaxStamina;
@@ -26,6 +34,8 @@ public class Unit : MonoBehaviour
     public int Magical_Defense;
     public int speed;
     public string Unit_Explanation;
+    [Header("가진 아이템")]
+    public List<Item> Items = new List<Item>();
 
     private void Start()
     {
@@ -61,7 +71,7 @@ public class Unit : MonoBehaviour
 
     public void FighterMe()
     {
-        FightManager.instance.Fights_units.Add(this);
+        FightManager.instance.Fights_units.Add(gameObject);
     }
 
 }

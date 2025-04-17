@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5619c0f1b62ef5b44b5692b24a6f30a1, type: 3}
+  m_Name: "\uC624\uC820"
+  m_EditorClassIdentifier: 
+  Unit_Obj: {fileID: 5442965718058997186, guid: ca35ba5641506a74692e1617299c8ca7, type: 3}
+  Unit_id: 2
+  Unit_name: "\uC624\uC820"
+  MaxHp: 300
+  Attack: 55
+  Magic: 55
+  Physical_Defense: 40
+  Magical_Defense: 50
+  speed: 80
+  MaxStamina: 100
+  teams: 0
+  Unit_Explanation: "\uD14C\uC2A4\uD2B8\uC6A9 \uC720"

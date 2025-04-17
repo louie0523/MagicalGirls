@@ -10,18 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5619c0f1b62ef5b44b5692b24a6f30a1, type: 3}
-  m_Name: "\uBBFC\uCCA0\uAD70"
+  m_Name: "\uBBFC\uCCA0\uB9D8"
   m_EditorClassIdentifier: 
-  Unit_id: 0
-  Unit_name: "\uBBFC\uCCA0\uAD70"
-  MaxHp: 200
-  Attack: 50
+  Unit_id: 1
+  Unit_name: "\uBBFC\uCCA0\uB9D8"
+  MaxHp: 300
+  Attack: 35
   Magic: 0
-  Physical_Defense: 80
-  Magical_Defense: 20
+  Physical_Defense: 60
+  Magical_Defense: 40
   speed: 40
   MaxStamina: 100
   teams: 1
-  Unit_Explanation: "\uBA38\uB9AC\uCE74\uB77D\uC774 \uC5C6\uC5B4 \uB2E4\uB978 \uAE30\uCD08
-    \uC720\uB2DB\uBCF4\uB2E4 \uC870\uAE08 \uB0A0\uB835\uD558\uB2E4 \uC6B0\uB9AC\uC758
-    \uC601\uC6D0\uC740 \uB300\uB3C4!"
+  Unit_Explanation: "\uCF54\uC774\uCE20ww"
