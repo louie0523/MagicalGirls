@@ -38,6 +38,7 @@ public class Unit : MonoBehaviour
     public List<Item> Items = new List<Item>();
     [Header("전투")]
     public Unit Target;
+    public bool isAlive = true;
 
     private void Start()
     {
@@ -74,6 +75,39 @@ public class Unit : MonoBehaviour
     public void FighterMe()
     {
         FightManager.instance.Fights_units.Add(gameObject);
+    }
+
+    public void Damage(int damage)
+    {
+        Hp -= damage;
+        if(Hp <= 0 && isAlive)
+        {
+            isAlive = false;
+            Hp = 0;
+        }
+    }
+
+    public void AttackEnemy(Unit Target)
+    {
+        Target.Damage(Attack);
+        Debug.Log(gameObject.name + "가 " + Target.gameObject.name + "에게 " + Attack + "의 피해를 입힙니다.");
+        BattleSystem.instance.ProessTurn();
+    }
+
+
+    public void EnemyAttack()
+    {
+        if(!BattleSystem.instance.BattleEnd)
+        {
+            int rand = Random.Range(0, BattleSystem.instance.Turn.Count);
+            while (BattleSystem.instance.Turn[rand].team == Team.Enemy && !BattleSystem.instance.BattleEnd)
+            {
+                rand = Random.Range(0, BattleSystem.instance.Turn.Count);
+            }
+            BattleSystem.instance.Turn[rand].Damage(Attack);
+            Debug.Log(gameObject.name + "가 " + BattleSystem.instance.Turn[rand].gameObject.name + "에게 " + Attack + "의 피해를 입힙니다.");
+            BattleSystem.instance.ProessTurn();
+        }
     }
 
 }

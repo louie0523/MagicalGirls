@@ -13,6 +13,7 @@ public class BattleSystem : MonoBehaviour
     public List<Unit> Turn = new List<Unit>();
     public int CurrentTurn = 0;
     public bool turnProess = true;
+    public bool BattleEnd = false;
 
     private void Awake()
     {
@@ -33,6 +34,14 @@ public class BattleSystem : MonoBehaviour
 
     void Update()
     {
+        if(!BattleEnd)
+        {
+            TargetEnemy();
+        }
+    }
+
+    void TargetEnemy()
+    {
         if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -40,7 +49,13 @@ public class BattleSystem : MonoBehaviour
 
             if (hit.collider != null)
             {
-                Debug.Log("클릭한 오브젝트: " + hit.collider.name);
+                Unit hitUnit = hit.collider.GetComponent<Unit>();
+                Debug.Log(hitUnit.gameObject.name);
+                if (hitUnit.team == Team.Enemy && Turn[CurrentTurn].team == Team.Player && turnProess && hitUnit.isAlive)
+                {
+                    turnProess = false;
+                    Turn[CurrentTurn].AttackEnemy(hitUnit);
+                }
             }
         }
     }
@@ -87,6 +102,42 @@ public class BattleSystem : MonoBehaviour
     void TurnSetting()
     {
         Turn.Sort((a, b) => b.speed.CompareTo(a.speed));
+    }
+
+    public void ProessTurn()
+    {
+        if (!Turn.Exists(u => u.team == Team.Player && u.isAlive))
+        {
+            Debug.Log("플레이어 패배");
+            BattleEnd = true;
+            return;
+        }
+        if (!Turn.Exists(u => u.team == Team.Enemy && u.isAlive))
+        {
+            Debug.Log("플레이어 승리");
+            BattleEnd = true;
+            return;
+        }
+        if (!BattleEnd)
+        {
+            turnProess = true;
+
+            do
+            {
+                CurrentTurn++;
+                if (CurrentTurn >= Turn.Count)
+                {
+                    CurrentTurn = 0;
+                    TurnSetting();
+                }
+            } while (!Turn[CurrentTurn].isAlive);
+
+            if (Turn[CurrentTurn].team == Team.Enemy)
+            {
+                Turn[CurrentTurn].EnemyAttack();
+            }
+        }
+       
     }
 
 }
