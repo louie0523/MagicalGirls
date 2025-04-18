@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
+using UnityEngine.UI;
 
 
 public class BattleSystem : MonoBehaviour
@@ -14,6 +16,10 @@ public class BattleSystem : MonoBehaviour
     public int CurrentTurn = 0;
     public bool turnProess = true;
     public bool BattleEnd = false;
+
+    [Header("UI")]
+    public TextMeshProUGUI CurrentTurner;
+    public List<Slider> PlayerHPbar = new List<Slider>();
 
     private void Awake()
     {
@@ -30,6 +36,9 @@ public class BattleSystem : MonoBehaviour
     {
         PostionSetting();
         StartBattileSet();
+        HPbarSetting();
+        CurrentTurnTextSet();
+        
     }
 
     void Update()
@@ -56,6 +65,19 @@ public class BattleSystem : MonoBehaviour
                     turnProess = false;
                     Turn[CurrentTurn].AttackEnemy(hitUnit);
                 }
+            }
+        }
+    }
+
+    void HPbarSetting()
+    {
+        int num = 0;
+        for(int i = 0; i < PlayerHPbar.Count; i++)
+        {
+            if(Turn[i].team == Team.Player)
+            {
+                Turn[i].MyHpBar(PlayerHPbar[num]);
+                num++;
             }
         }
     }
@@ -104,6 +126,11 @@ public class BattleSystem : MonoBehaviour
         Turn.Sort((a, b) => b.speed.CompareTo(a.speed));
     }
 
+    void CurrentTurnTextSet()
+    {
+        CurrentTurner.text = Turn[CurrentTurn].gameObject.name + "의 턴입니다.";
+    }
+
     public void ProessTurn()
     {
         if (!Turn.Exists(u => u.team == Team.Player && u.isAlive))
@@ -122,19 +149,24 @@ public class BattleSystem : MonoBehaviour
         {
             turnProess = true;
 
-            do
+
+            CurrentTurn++;
+            if (CurrentTurn >= Turn.Count)
+            {
+                CurrentTurn = 0;
+                TurnSetting();
+            }
+
+            while(!Turn[CurrentTurn].isAlive)
             {
                 CurrentTurn++;
-                if (CurrentTurn >= Turn.Count)
-                {
-                    CurrentTurn = 0;
-                    TurnSetting();
-                }
-            } while (!Turn[CurrentTurn].isAlive);
+                TurnSetting();
+            }
 
-            if (Turn[CurrentTurn].team == Team.Enemy)
+            CurrentTurnTextSet();
+            if (Turn[CurrentTurn].team == Team.Enemy && Turn[CurrentTurn].isAlive)
             {
-                Turn[CurrentTurn].EnemyAttack();
+                StartCoroutine(Turn[CurrentTurn].EnemyAttack());
             }
         }
        

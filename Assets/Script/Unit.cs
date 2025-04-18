@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public enum Team
 {
@@ -39,6 +40,7 @@ public class Unit : MonoBehaviour
     [Header("전투")]
     public Unit Target;
     public bool isAlive = true;
+    public Slider hpBar;
 
     private void Start()
     {
@@ -70,6 +72,10 @@ public class Unit : MonoBehaviour
         Magical_Defense = unitData.Magical_Defense;
         speed = unitData.speed;
         Unit_Explanation = unitData.Unit_Explanation;
+        if(team == Team.Enemy)
+        {
+            HpBarEnemy();
+        }
     }
 
     public void FighterMe()
@@ -85,6 +91,28 @@ public class Unit : MonoBehaviour
             isAlive = false;
             Hp = 0;
         }
+        SettingHPbar();
+    }
+
+    public void Heal(int heal)
+    {
+        Hp += heal;
+        if(Hp > MaxHp)
+        {
+            Hp = MaxHp;
+        }
+        SettingHPbar();
+    }
+
+    public void MyHpBar(Slider slider)
+    {
+        hpBar = slider;
+        SettingHPbar();
+    }
+
+    public void SettingHPbar()
+    {
+        hpBar.value = (float) Hp / MaxHp;
     }
 
     public void AttackEnemy(Unit Target)
@@ -94,18 +122,28 @@ public class Unit : MonoBehaviour
         BattleSystem.instance.ProessTurn();
     }
 
-
-    public void EnemyAttack()
+    void HpBarEnemy()
     {
-        if(!BattleSystem.instance.BattleEnd)
+        hpBar = transform.Find("Canvas").transform.GetChild(0).GetComponent<Slider>();
+        SettingHPbar();
+    }
+
+    public IEnumerator EnemyAttack()
+    {
+        if (!BattleSystem.instance.BattleEnd)
         {
-            int rand = Random.Range(0, BattleSystem.instance.Turn.Count);
-            while (BattleSystem.instance.Turn[rand].team == Team.Enemy && !BattleSystem.instance.BattleEnd)
+            yield return new WaitForSeconds(1f);
+
+            // 플레이어 리스트
+            List<Unit> possibleTargets = BattleSystem.instance.Turn.FindAll(u => u.team == Team.Player && u.isAlive);
+
+            if (possibleTargets.Count > 0)
             {
-                rand = Random.Range(0, BattleSystem.instance.Turn.Count);
+                Unit target = possibleTargets[Random.Range(0, possibleTargets.Count)];
+                target.Damage(Attack);
+                Debug.Log(gameObject.name + "가 " + target.gameObject.name + "에게 " + Attack + "의 피해를 입힙니다.");
             }
-            BattleSystem.instance.Turn[rand].Damage(Attack);
-            Debug.Log(gameObject.name + "가 " + BattleSystem.instance.Turn[rand].gameObject.name + "에게 " + Attack + "의 피해를 입힙니다.");
+
             BattleSystem.instance.ProessTurn();
         }
     }
