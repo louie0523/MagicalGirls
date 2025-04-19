@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5619c0f1b62ef5b44b5692b24a6f30a1, type: 3}
   m_Name: "\uC624\uC820"
   m_EditorClassIdentifier: 
-  Unit_Obj: {fileID: 5442965718058997186, guid: ca35ba5641506a74692e1617299c8ca7, type: 3}
   Unit_id: 2
-  Unit_name: "\uC624\uC820"
+  Unit_name: "\uD14C\uC2A4\uD130"
   MaxHp: 300
   Attack: 55
   Magic: 55

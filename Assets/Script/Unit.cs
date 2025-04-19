@@ -38,9 +38,13 @@ public class Unit : MonoBehaviour
     [Header("가진 아이템")]
     public List<Item> Items = new List<Item>();
     [Header("전투")]
+    public Animator animator;
     public Unit Target;
     public bool isAlive = true;
     public Slider hpBar;
+    public GameObject WeaponPoint;
+    public Animator EfFect;
+    public GameObject Effecter;
 
     private void Start()
     {
@@ -72,10 +76,16 @@ public class Unit : MonoBehaviour
         Magical_Defense = unitData.Magical_Defense;
         speed = unitData.speed;
         Unit_Explanation = unitData.Unit_Explanation;
+        animator = transform.GetChild(0).GetComponent<Animator>();
         if(team == Team.Enemy)
         {
             HpBarEnemy();
         }
+        if(Effecter != null)
+        {
+            Effecter.SetActive(false);
+        }
+        
     }
 
     public void FighterMe()
@@ -117,10 +127,54 @@ public class Unit : MonoBehaviour
 
     public void AttackEnemy(Unit Target)
     {
+        StartCoroutine(AttackRoutine(Target));
+    }
+
+    private IEnumerator AttackRoutine(Unit Target)
+    {
+        Vector3 originalPos = transform.position;
+        Vector3 targetPos = new Vector3(Target.transform.position.x + 5f, transform.position.y, transform.position.z);
+        animator.SetTrigger("Dash");
+        // 앞으로 이동 (1초)
+        float duration = 1f;
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            transform.position = Vector3.Lerp(originalPos, targetPos, t / duration);
+            yield return null;
+        }
+
+        animator.SetTrigger("Attack");
+        yield return new WaitForSeconds(0.2333f);
+        Effecter.SetActive(true);
+        EfFect.SetTrigger("Effect");
+        // 공격 처리
         Target.Damage(Attack);
         Debug.Log(gameObject.name + "가 " + Target.gameObject.name + "에게 " + Attack + "의 피해를 입힙니다.");
+
+        // 살짝 멈춤
+        yield return new WaitForSeconds(0.25f);
+        Effecter.SetActive(false);
+
+        animator.SetTrigger("BackDash");
+        // 복귀 (0.2초)
+        t = 0f;
+        duration = 0.2f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            transform.position = Vector3.Lerp(targetPos, originalPos, t / duration);
+            yield return null;
+        }
+
+        // 완벽히 복귀 보정
+        transform.position = originalPos;
+
+        // 턴 진행
         BattleSystem.instance.ProessTurn();
     }
+
 
     void HpBarEnemy()
     {
