@@ -88,6 +88,7 @@ public class Unit : MonoBehaviour
         
     }
 
+
     public void FighterMe()
     {
         FightManager.instance.Fights_units.Add(gameObject);
@@ -114,8 +115,15 @@ public class Unit : MonoBehaviour
         SettingHPbar();
     }
 
+    public void BattleSetting()
+    {
+        Rigidbody2D rb2D = GetComponent<Rigidbody2D>();
+        rb2D.bodyType = RigidbodyType2D.Kinematic;
+    }
+
     public void MyHpBar(Slider slider)
     {
+        BattleSetting();
         hpBar = slider;
         SettingHPbar();
     }
@@ -132,6 +140,8 @@ public class Unit : MonoBehaviour
 
     private IEnumerator AttackRoutine(Unit Target)
     {
+        CapsuleCollider2D capsuleCollider2D = GetComponent<CapsuleCollider2D>();
+        capsuleCollider2D.enabled = false;
         Vector3 originalPos = transform.position;
         Vector3 targetPos = new Vector3(Target.transform.position.x + 5f, transform.position.y, transform.position.z);
         animator.SetTrigger("Dash");
@@ -146,7 +156,7 @@ public class Unit : MonoBehaviour
         }
 
         animator.SetTrigger("Attack");
-        yield return new WaitForSeconds(0.2333f);
+        yield return new WaitForSeconds(0.15f);
         Effecter.SetActive(true);
         EfFect.SetTrigger("Effect");
         // 공격 처리
@@ -168,6 +178,7 @@ public class Unit : MonoBehaviour
             yield return null;
         }
 
+        capsuleCollider2D.enabled = true;
         // 완벽히 복귀 보정
         transform.position = originalPos;
 

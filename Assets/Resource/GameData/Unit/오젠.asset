@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Unit_id: 2
   Unit_name: "\uD14C\uC2A4\uD130"
-  MaxHp: 300
+  MaxHp: 1000
   Attack: 55
   Magic: 55
   Physical_Defense: 40

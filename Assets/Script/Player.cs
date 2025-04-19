@@ -16,6 +16,15 @@ public class Player : MonoBehaviour
         animator = transform.GetChild(0).GetComponent<Animator>();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            animator.SetTrigger("Attack");
+
+        }
+    }
+
     private void FixedUpdate()
     {
         Move();
