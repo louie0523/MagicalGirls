@@ -16,6 +16,7 @@ MonoBehaviour:
   Unit_name: "\uBBFC\uCCA0\uAD70"
   MaxHp: 200
   Attack: 50
+  sense: 10
   Magic: 0
   Physical_Defense: 80
   Magical_Defense: 20

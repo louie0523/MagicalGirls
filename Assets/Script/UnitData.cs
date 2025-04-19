@@ -8,6 +8,7 @@ public class UnitData : ScriptableObject
     public string Unit_name;
     public int MaxHp = 100;
     public int Attack = 20;
+    public int sense = 10;
     public int Magic = 0;
     public int Physical_Defense = 50;
     public int Magical_Defense = 25;

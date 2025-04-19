@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+
+public enum IsPlayer
+{
+    Npc,
+    Player,
+};
 public enum Team
 {
     Player,
@@ -17,6 +23,8 @@ public class MyName
 }
 public class Unit : MonoBehaviour
 {
+    [Header("플레이어 여부(리듬 공격 여부")]
+    public IsPlayer isPlayer;
     [Header("ID 및 식별명")]
     public UnitData unitData;
     public Team team;
@@ -30,6 +38,8 @@ public class Unit : MonoBehaviour
     public float MaxStamina;
     public float Stamina;
     public int Attack;
+    public int AttackPoint = 10;
+    public int sence;
     public int Magic;
     public int Physical_Defense;
     public int Magical_Defense;
@@ -39,16 +49,16 @@ public class Unit : MonoBehaviour
     public List<Item> Items = new List<Item>();
     [Header("전투")]
     public Animator animator;
-    public Unit Target;
     public bool isAlive = true;
     public Slider hpBar;
     public GameObject WeaponPoint;
     public Animator EfFect;
     public GameObject Effecter;
+    public Unit AttackTartget;
 
     private void Start()
     {
-        if(unitData != null)
+        if (unitData != null)
         {
             StatusSetting();
             FighterMe();
@@ -60,7 +70,8 @@ public class Unit : MonoBehaviour
         if (unitData.teams == UnitData.Teams.Player)
         {
             team = Team.Player;
-        } else
+        }
+        else
         {
             team = Team.Enemy;
         }
@@ -71,21 +82,22 @@ public class Unit : MonoBehaviour
         MaxStamina = unitData.MaxStamina;
         Stamina = MaxStamina;
         Attack = unitData.Attack;
+        sence = unitData.sense;
         Magic = unitData.Magic;
         Physical_Defense = unitData.Physical_Defense;
         Magical_Defense = unitData.Magical_Defense;
         speed = unitData.speed;
         Unit_Explanation = unitData.Unit_Explanation;
         animator = transform.GetChild(0).GetComponent<Animator>();
-        if(team == Team.Enemy)
+        if (team == Team.Enemy)
         {
             HpBarEnemy();
         }
-        if(Effecter != null)
+        if (Effecter != null)
         {
             Effecter.SetActive(false);
         }
-        
+
     }
 
 
@@ -97,7 +109,7 @@ public class Unit : MonoBehaviour
     public void Damage(int damage)
     {
         Hp -= damage;
-        if(Hp <= 0 && isAlive)
+        if (Hp <= 0 && isAlive)
         {
             isAlive = false;
             Hp = 0;
@@ -108,7 +120,7 @@ public class Unit : MonoBehaviour
     public void Heal(int heal)
     {
         Hp += heal;
-        if(Hp > MaxHp)
+        if (Hp > MaxHp)
         {
             Hp = MaxHp;
         }
@@ -123,14 +135,13 @@ public class Unit : MonoBehaviour
 
     public void MyHpBar(Slider slider)
     {
-        BattleSetting();
         hpBar = slider;
         SettingHPbar();
     }
 
     public void SettingHPbar()
     {
-        hpBar.value = (float) Hp / MaxHp;
+        hpBar.value = (float)Hp / MaxHp;
     }
 
     public void AttackEnemy(Unit Target)
@@ -140,6 +151,7 @@ public class Unit : MonoBehaviour
 
     private IEnumerator AttackRoutine(Unit Target)
     {
+        AttackTartget = Target;
         CapsuleCollider2D capsuleCollider2D = GetComponent<CapsuleCollider2D>();
         capsuleCollider2D.enabled = false;
         Vector3 originalPos = transform.position;
@@ -155,22 +167,35 @@ public class Unit : MonoBehaviour
             yield return null;
         }
 
-        animator.SetTrigger("Attack");
-        yield return new WaitForSeconds(0.15f);
-        Effecter.SetActive(true);
-        EfFect.SetTrigger("Effect");
-        // 공격 처리
-        Target.Damage(Attack);
-        Debug.Log(gameObject.name + "가 " + Target.gameObject.name + "에게 " + Attack + "의 피해를 입힙니다.");
 
-        // 살짝 멈춤
+        int Nodspeed = Target.sence - sence;
+        if(isPlayer == IsPlayer.Player)
+        {
+            RhyhmAttackManager.instance.attackStart(this ,Nodspeed, AttackPoint, Target.transform.position);
+            RhyhmAttackManager.instance.isAttack = true;
+        } else
+        {
+            AttackBattleEnemy();
+        }
+
+
+        while(RhyhmAttackManager.instance.isAttack)
+        {
+            yield return null;
+        }
+
+        StartCoroutine(attackEnd(targetPos, originalPos, capsuleCollider2D));
+    }
+
+    IEnumerator attackEnd(Vector3 targetPos, Vector3 originalPos, CapsuleCollider2D capsuleCollider2D)
+    {
+        Debug.Log("공격 종료");
         yield return new WaitForSeconds(0.25f);
         Effecter.SetActive(false);
 
         animator.SetTrigger("BackDash");
-        // 복귀 (0.2초)
-        t = 0f;
-        duration = 0.2f;
+        float t = 0f;
+        float duration = 0.2f;
         while (t < duration)
         {
             t += Time.deltaTime;
@@ -184,6 +209,23 @@ public class Unit : MonoBehaviour
 
         // 턴 진행
         BattleSystem.instance.ProessTurn();
+    }
+
+
+    public IEnumerator AttackBattleEnemy()
+    {
+        animator.SetTrigger("Attack");
+        yield return new WaitForSeconds(0.15f);
+        Effecter.SetActive(true);
+        EfFect.SetTrigger("Effect");
+        // 공격 처리
+        AttackTartget.Damage(Attack / 10);
+        Debug.Log(gameObject.name + "가 " + AttackTartget.gameObject.name + "에게 " + Attack + "의 피해를 입힙니다.");
+        yield return new WaitForSeconds(0.1f);
+        if(Effecter.activeSelf)
+        {
+            Effecter.SetActive(false);
+        }
     }
 
 

@@ -72,13 +72,14 @@ public class BattleSystem : MonoBehaviour
     void HPbarSetting()
     {
         int num = 0;
-        for(int i = 0; i < PlayerHPbar.Count; i++)
+        for(int i = 0; i < Turn.Count; i++)
         {
             if(Turn[i].team == Team.Player)
             {
                 Turn[i].MyHpBar(PlayerHPbar[num]);
                 num++;
             }
+            Turn[i].BattleSetting();
         }
     }
 
